@@ -1,0 +1,26 @@
+{% extends 'base_app/base_app_base.html' %}
+{% load static %}
+{% block body_block %}
+<div class="box">
+    <table class="table">
+        <thead>
+            <tr>
+                <td>City</td>
+                <td>Polulation</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for city, population in city_dict.items %}
+            <tr>
+                <td>{{ city }}</td>
+                <td>{{ population }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td>No Records found</td>
+            </tr>                
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

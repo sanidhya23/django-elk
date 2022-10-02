@@ -1,0 +1,28 @@
+{% extends 'base_app/base_app_base.html' %}
+{% load static %}
+{% block body_block %}
+<div class="container">
+    <section class="section">
+        <form method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label for="{{ form.service.id_for_label }}">{{ form.city_name.label }}</label>
+                <div class="control">
+                        {{ form.city_name }}
+                </div>
+            </div>
+            <div class="field">
+                <label for="{{ form.kingdom.id_for_label }}">{{ form.city_population.label }}</label>
+                <div class="control">
+                        {{ form.city_population }}
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                  <button class="button is-normal is-info" type="submit" value="Submit">Submit</button>
+                </div>
+            </div>            
+        </form>
+    </section>
+</div>
+{% endblock %}
