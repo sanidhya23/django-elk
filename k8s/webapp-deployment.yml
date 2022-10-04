@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  labels:
+    app: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: nginx
+          image: sanidhya/django_elk:nginx-20221004_1
+          ports:
+            - containerPort: 80
+          volumeMounts:
+          - mountPath: /home/app/web/staticfiles/
+            name: staticassetvol
+        - name: app
+          image: sanidhya/django_elk:app-20221004_1
+          command: ["gunicorn"]
+          args: ["django_elk.wsgi:application", "--bind", "0.0.0.0:8000", "--workers" , "3", "--timeout", "300"]
+          ports:
+          - containerPort: 8000
+          volumeMounts:
+          - mountPath: /home/app/web/staticfiles/
+            name: staticassetvol
+          env:
+          # - name: ELASTIC_ENDPOINT
+          #   value: "http://es-container:9200"
+          - name: ELASTIC_ENDPOINT
+            value: "http://elastic-service.default.svc.cluster.local:9200"
+          - name: ELASTIC_INDEX_NAME
+            value: "city-index"
+      imagePullSecrets:
+        - name: docker-keys
+      volumes:
+        - name: staticassetvol
+          emptyDir: {}
+

@@ -1,0 +1,35 @@
+version: '3.3'
+services:
+  web:
+    build:
+      context: ./django_elk
+      dockerfile: Dockerfile.prod
+    command: gunicorn django_elk.wsgi:application --bind 0.0.0.0:8000 --workers=3 --timeout 300
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+    expose:
+      - 8000
+    environment:
+      - ELASTIC_ENDPOINT=http://es-container:9200
+      - ELASTIC_INDEX_NAME=city-index
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile.qa
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+    ports:
+      - 80:80
+    depends_on:
+      - web
+  elasticsearch:
+    container_name: es-container
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.2
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - use_ssl=false
+    ports:
+      - 9200:9200  
+volumes:
+  static_volume:

@@ -28,7 +28,7 @@ class CityListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(CityListView, self).get_context_data(**kwargs)
-        es = Elasticsearch(['http://localhost:9200', settings.ELASTIC_ENDPOINT])
+        es = Elasticsearch([settings.ELASTIC_ENDPOINT])
         result = es.search(index=settings.ELASTIC_INDEX_NAME, body={"query":{"match_all":{}}})
         city_dict = {}
         if result['hits']['hits']:
@@ -55,7 +55,7 @@ class CityAddView(FormView):
         if False in [city, population]:
             print("Invalid input")
         else:
-            es = Elasticsearch(['http://localhost:9200', settings.ELASTIC_ENDPOINT])
+            es = Elasticsearch([settings.ELASTIC_ENDPOINT])
             doc = {
                 'city': self.request.POST.get('city_name'),
                 'population': self.request.POST.get('city_population'),
