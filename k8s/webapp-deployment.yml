@@ -32,8 +32,6 @@ spec:
           - mountPath: /home/app/web/staticfiles/
             name: staticassetvol
           env:
-          # - name: ELASTIC_ENDPOINT
-          #   value: "http://es-container:9200"
           - name: ELASTIC_ENDPOINT
             value: "http://elastic-service.default.svc.cluster.local:9200"
           - name: ELASTIC_INDEX_NAME
