@@ -1,7 +1,8 @@
 **Django ELK Sample App**
-Please follow the steps for app installation
-
 ---
+Please follow the steps for app installation.
+Please note that the file paths are from windows, please use / for linux.
+
 
 ## Set docker credenatials for kubernetes cluster 
 ```
@@ -30,18 +31,25 @@ docker push sanidhya/django_elk:nginx-20221004_1
 Deploy application in Kubernetes
 ```
 cd <Path to project>\django-elk\k8s
+
 # Deploy elasticsearch pods
 kubectl apply -f elastic-deployment.yml
+
 # Check for pods to start 
 kubectl get po
+
 # Deploy service 
 kubectl apply -f elastic-service.yml
+
 # Deploy web app pods
 kubectl apply -f webapp-deployment.yml
+
 # Check for pods to start 
 kubectl get po
+
 # Deploy service 
 kubectl apply -f app-service.yml
+
 # Port forward to access the application web ui
 kubectl port-forward service/app-service 7080:80
 ```
