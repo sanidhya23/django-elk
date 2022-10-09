@@ -18,7 +18,10 @@ class HealthStatusView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(HealthStatusView, self).get_context_data(**kwargs)
-        context['health_status'] = 'OK'
+        context['health_status'] = 'NOT OK'
+        es = Elasticsearch([settings.ELASTIC_ENDPOINT])
+        if es.ping():    # Test connection
+           context['health_status'] = 'OK'
         return context
 
 
@@ -29,11 +32,13 @@ class CityListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(CityListView, self).get_context_data(**kwargs)
         es = Elasticsearch([settings.ELASTIC_ENDPOINT])
-        result = es.search(index=settings.ELASTIC_INDEX_NAME, body={"query":{"match_all":{}}})
         city_dict = {}
-        if result['hits']['hits']:
-            for doc in result['hits']['hits']:
-                city_dict[doc['_source']['city']] = doc['_source']['population']
+        if es.ping(): # Test connection
+            if es.indices.exists(index=settings.ELASTIC_INDEX_NAME): # Check if index exists before searching the document
+                result = es.search(index=settings.ELASTIC_INDEX_NAME, body={"query":{"match_all":{}}})
+                if result['hits']['hits']:
+                    for doc in result['hits']['hits']:
+                        city_dict[doc['_source']['city']] = doc['_source']['population']
         
         print(city_dict)
         context['city_dict'] = city_dict
@@ -61,8 +66,11 @@ class CityAddView(FormView):
                 'population': self.request.POST.get('city_population'),
                 'timestamp': datetime.now()
             }
-            res = es.index(index=settings.ELASTIC_INDEX_NAME, id=city, document=doc)
-            print(res)
+
+            if es.ping(): # Test connection
+                res = es.index(index=settings.ELASTIC_INDEX_NAME, id=city, document=doc)
+                print(res)
+
         return super(CityAddView, self).form_valid(form)
 
 

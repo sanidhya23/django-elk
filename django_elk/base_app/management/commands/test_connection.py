@@ -14,16 +14,19 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         log_entry = "Checking Elastic connection"
         self.stdout.write(log_entry)
-
+        
         es = Elasticsearch([settings.ELASTIC_ENDPOINT])
         doc = {
                 'city': 'test',
                 'population': '34',
                 'timestamp': datetime.now()
-            }
-        res = es.index(index=settings.ELASTIC_INDEX_NAME, id=doc['city'], document=doc)
-        log_entry = str(res)
-        self.stdout.write(log_entry)
+        }
+        if es.ping(): # Test connection
+            res = es.index(index=settings.ELASTIC_TEST_INDEX_NAME, id=doc['city'], document=doc)
+            log_entry = str(res)
+            self.stdout.write(log_entry)
+        else:
+            self.stdout.write("Elastic search is not responding")
 
 if __name__ == "__main__":
     pass

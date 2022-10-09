@@ -24,7 +24,7 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 SECRET_KEY = 'django-insecure-%r=q8lfu!xxx&7=h3um+5r=vigjnn8(l1&=bx@o*o2-_*2#v6l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
 
@@ -128,3 +128,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ELASTIC_ENDPOINT = os.environ.get('ELASTIC_ENDPOINT', 'http://127.0.0.1:9200')
 ELASTIC_INDEX_NAME = os.environ.get('ELASTIC_INDEX_NAME', 'city-index')
+ELASTIC_TEST_INDEX_NAME = os.environ.get('ELASTIC_TEST_INDEX_NAME', 'test-index')
