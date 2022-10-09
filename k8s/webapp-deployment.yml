@@ -32,6 +32,10 @@ spec:
           - mountPath: /home/app/web/staticfiles/
             name: staticassetvol
           env:
+          - name: SECRET_KEY
+            value: "8881212"
+          - name: DEBUG
+            value: "0"
           - name: ELASTIC_ENDPOINT
             value: "http://elastic-service.default.svc.cluster.local:9200"
           - name: ELASTIC_INDEX_NAME

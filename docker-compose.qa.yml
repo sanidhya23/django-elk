@@ -10,6 +10,8 @@ services:
     expose:
       - 8000
     environment:
+      - DEBUG=0
+      - SECRET_KEY=8881212
       - ELASTIC_ENDPOINT=http://es-container:9200
       - ELASTIC_INDEX_NAME=city-index
   nginx:
