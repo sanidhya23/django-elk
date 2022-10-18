@@ -149,6 +149,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "django_elk.tasks.echo_message",
         "schedule": crontab(minute='*/1'),
     },
+    "my_test_add_task": {
+        "task": "django_elk.tasks.test_add_task",
+        "schedule": crontab(minute='*/1'),
+    },
 }
 # Timezone for celery jobs
 CELERY_TIMEZONE = os.environ.get("CELERY_TIMEZONE", 'America/New_York')

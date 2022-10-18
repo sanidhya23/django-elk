@@ -6,6 +6,11 @@ from io import StringIO
 def test_elk_connection():
     call_command('test_connection')
 
+
+@shared_task
+def test_add_task():
+    return "Hi 1234"
+
 @shared_task
 def echo_message():
     out = StringIO()
