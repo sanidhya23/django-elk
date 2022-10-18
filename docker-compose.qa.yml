@@ -32,6 +32,49 @@ services:
       - discovery.type=single-node
       - use_ssl=false
     ports:
-      - 9200:9200  
+      - 9200:9200
+  redis:
+    container_name: redis
+    image: redis:alpine
+    environment:
+      - TZ=America/New_York
+  celery:
+    build:
+      context: ./django_elk
+      dockerfile: Dockerfile.prod
+    command: celery --app django_elk worker --loglevel=info
+    environment:
+      - DEBUG=0
+      - SECRET_KEY=8881212
+      - ELASTIC_ENDPOINT=http://es-container:9200
+      - ELASTIC_INDEX_NAME=city-index
+    depends_on:
+      - redis
+  celery-beat:
+    build:
+      context: ./django_elk
+      dockerfile: Dockerfile.prod
+    command: celery --app django_elk beat --loglevel=debug --logfile=logs/celery_beat.log
+    environment:
+      - DEBUG=0
+      - SECRET_KEY=8881212
+      - ELASTIC_ENDPOINT=http://es-container:9200
+      - ELASTIC_INDEX_NAME=city-index
+    depends_on:
+      - redis
+  dashboard:
+    build:
+      context: ./django_elk
+      dockerfile: Dockerfile.prod
+    command: celery --app django_elk flower --port=5555
+    ports:
+      - 5555:5555
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+      - FLOWER_BASIC_AUTH=admin:MyAdmin123#
+    depends_on:
+      - web
+      - redis
+      - celery
 volumes:
   static_volume:

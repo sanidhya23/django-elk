@@ -107,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -129,3 +129,30 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ELASTIC_ENDPOINT = os.environ.get('ELASTIC_ENDPOINT', 'http://127.0.0.1:9200')
 ELASTIC_INDEX_NAME = os.environ.get('ELASTIC_INDEX_NAME', 'city-index')
 ELASTIC_TEST_INDEX_NAME = os.environ.get('ELASTIC_TEST_INDEX_NAME', 'test-index')
+
+
+###################################################
+# Celery Settings                                 #
+###################################################
+from celery.schedules import crontab
+import django_elk.tasks
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://redis:6379")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "redis://redis:6379")
+
+CELERY_BEAT_SCHEDULE = {
+    "check_elk_connection": {
+        "task": "django_elk.tasks.test_elk_connection",
+        "schedule": crontab(minute='*/2'),
+    },
+    "echo_message": {
+        "task": "django_elk.tasks.echo_message",
+        "schedule": crontab(minute='*/1'),
+    },
+}
+# Timezone for celery jobs
+CELERY_TIMEZONE = os.environ.get("CELERY_TIMEZONE", 'America/New_York')
+
+# Flower dashboard settings
+FLOWER_USER = os.environ.get("FLOWER_USER")
+FLOWER_PASSWORD = os.environ.get("FLOWER_PASSWORD")

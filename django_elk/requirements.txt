@@ -1,3 +1,7 @@
 Django==3.*
 gunicorn
 elasticsearch
+# Celery modules
+celery
+redis
+flower
